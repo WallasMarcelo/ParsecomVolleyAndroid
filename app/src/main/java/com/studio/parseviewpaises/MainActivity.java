@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
@@ -14,17 +15,23 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewOnClickListener {
 
     private RecyclerView recyclerView;
     private AdpterListaPaises adapter;
-    private JSONObject object;
+    private List<Paises> list = new ArrayList<>();
 
 
     @Override
@@ -34,25 +41,51 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewOnCli
 
         String url ="https://restcountries.eu/rest/v2/lang/pt";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(MainActivity.this,response.toString(),Toast.LENGTH_LONG);
+                    public void onResponse(JSONArray response) {
+
+                        for (int i = 0; i < response.length(); i++){
+                            try {
+                                JSONObject object = response.getJSONObject(i);
+
+                                Paises paises = new Paises();
+
+                                String coordenadas = object.getString("latlng");
+
+
+                                paises.setBandeira(object.getString("flag"));
+                                paises.setNome(object.getString("name"));
+                                paises.setLatitude(coordenadas.substring(1,coordenadas.indexOf(",")));
+                                paises.setLongetude( coordenadas.substring(coordenadas.indexOf(",") + 1, coordenadas.length() - 1));
+
+                                list.add(paises);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this,"Erro ",Toast.LENGTH_LONG);
+                        Toast.makeText(MainActivity.this,"Erro " + error.getMessage(),Toast.LENGTH_LONG);
 
                     }
                 });
 
         // Access the RequestQueue through your singleton class.
-        MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        MySingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         recyclerView = (RecyclerView) findViewById(R.id.RecyclerPaises);
         recyclerView.setHasFixedSize(true);
@@ -61,22 +94,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewOnCli
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
-       /* adapter = new AdpterListaPaises(,getLayoutInflater());
+        adapter = new AdpterListaPaises(list,getLayoutInflater());
         adapter.setRecyclerOnClickListener(MainActivity.this);
-        recyclerView.setAdapter(adapter);*/
+        recyclerView.setAdapter(adapter);
 
     }
-
 
     @Override
     public void onClickListener(View view, int position) {
 
-       /* DocumentSnapshot documentSnapshot = doc.get(position);
-
-        Intent intent = new Intent(getContext(), NewPetActivity2.class);
-        intent.putExtra("id",documentSnapshot.getId());
-        intent.putExtra("pet", (Parcelable) documentSnapshot.toObject(Pet.class));
-        startActivity(intent);*/
+        Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+        intent.putExtra("Lat",list.get(position).getLatitude());
+        intent.putExtra("Lon",list.get(position).getLongetude());
+        intent.putExtra("Nome",list.get(position).getNome());
+        startActivity(intent);
 
     }
 

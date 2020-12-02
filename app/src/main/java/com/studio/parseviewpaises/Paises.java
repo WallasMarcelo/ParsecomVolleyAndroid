@@ -4,6 +4,8 @@ public class Paises {
 
     private String nome;
     private String bandeira;
+    private String Latitude;
+    private  String Longetude;
 
     public String getNome() {
         return nome;
@@ -19,5 +21,21 @@ public class Paises {
 
     public void setBandeira(String bandeira) {
         this.bandeira = bandeira;
+    }
+
+    public String getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        Latitude = latitude;
+    }
+
+    public String getLongetude() {
+        return Longetude;
+    }
+
+    public void setLongetude(String longetude) {
+        Longetude = longetude;
     }
 }

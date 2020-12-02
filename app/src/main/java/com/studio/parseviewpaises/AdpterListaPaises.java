@@ -1,6 +1,8 @@
 package com.studio.parseviewpaises;
 
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class AdpterListaPaises extends RecyclerView.Adapter<AdpterListaPaises.ViewHolder>{
@@ -17,6 +21,10 @@ public class AdpterListaPaises extends RecyclerView.Adapter<AdpterListaPaises.Vi
     private LayoutInflater layoutInflater;
     private static RecyclerViewOnClickListener recyclerViewOnClickListener;
 
+    public AdpterListaPaises(List<Paises> list, LayoutInflater layoutInflater) {
+        this.list = list;
+        this.layoutInflater = layoutInflater;
+    }
 
 
     public void setRecyclerOnClickListener(RecyclerViewOnClickListener recyclerViewOnClickListener){
@@ -32,7 +40,13 @@ public class AdpterListaPaises extends RecyclerView.Adapter<AdpterListaPaises.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        this.recyclerViewOnClickListener = recyclerViewOnClickListener;
+
+        holder.nome.setText(list.get(position).getNome());
+
+
+        Glide.with(layoutInflater.getContext()).load(Uri.parse(list.get(position).getBandeira()))
+                .into(holder.bandeira);
+
     }
 
     @Override
