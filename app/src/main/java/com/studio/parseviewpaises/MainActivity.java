@@ -39,6 +39,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewOnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(!list.isEmpty())
+            return;
+
         String url ="https://restcountries.eu/rest/v2/lang/pt";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
@@ -61,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewOnCli
                                 paises.setLongetude( coordenadas.substring(coordenadas.indexOf(",") + 1, coordenadas.length() - 1));
 
                                 list.add(paises);
+                                onResume();
 
 
                             } catch (JSONException e) {
@@ -84,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewOnCli
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         recyclerView = (RecyclerView) findViewById(R.id.RecyclerPaises);
         recyclerView.setHasFixedSize(true);
@@ -97,6 +107,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewOnCli
         adapter = new AdpterListaPaises(list,getLayoutInflater());
         adapter.setRecyclerOnClickListener(MainActivity.this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
 
     }
 

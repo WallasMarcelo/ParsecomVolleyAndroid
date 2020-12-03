@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AdpterListaPaises extends RecyclerView.Adapter<AdpterListaPaises.ViewHolder>{
     private List<Paises> list;
     private LayoutInflater layoutInflater;
@@ -44,8 +46,8 @@ public class AdpterListaPaises extends RecyclerView.Adapter<AdpterListaPaises.Vi
         holder.nome.setText(list.get(position).getNome());
 
 
-        Glide.with(layoutInflater.getContext()).load(Uri.parse(list.get(position).getBandeira()))
-                .into(holder.bandeira);
+        //Glide.with(layoutInflater.getContext()).load(Uri.parse(list.get(position).getBandeira()))
+              //  .into(holder.bandeira);
 
     }
 
@@ -55,13 +57,13 @@ public class AdpterListaPaises extends RecyclerView.Adapter<AdpterListaPaises.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public ImageView bandeira;
+        public CircleImageView bandeira;
         public TextView nome;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            bandeira = (ImageView) itemView.findViewById(R.id.imgBandeira);
+            bandeira = (CircleImageView) itemView.findViewById(R.id.Bandeira);
             nome = (TextView) itemView.findViewById(R.id.txtNome);
 
             itemView.setOnClickListener(this);
